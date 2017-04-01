@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Neighborhood Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Saved Location</h1>
+
+        <nav>
+            <a id='MeAAAnu' href="#" class="hamburger">
+                <div class="line"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+            </a>
+                <!--   You've clicked <span data-bind="text: numberOfClicks"></span> times -->
+ 
+            <select data-bind="options: locations,
+
+           value:selectedOption,
+
+           optionsText: 'title',
+
+           optionsCaption: 'Choose...'"></select>
+            <ul class="clearfix menu" data-bind="foreach: { data: getCurrentLocations(), as: 'locations' },click: focusLocation">
+                <li>
+                    <a data-bind="text:title, attr: {id: title}"  href=#></a>
+                </li>
+
+            </ul>
+
+        </nav>
+    </header>
+    <script src="js/knockout-3.4.1.js"></script>
+    <script src="js/vendor/jquery-1.11.2.min.js"></script>
+    <script src="js/main.js"></script>
+    <div id="map"></div>
+</body>
+
+>
+
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjNHWnXLbhirJhIFPIh3W1jhg1tVZ7qtA&libraries=places&callback=initAutocomplete" onerror="gmapsError()"></script>
+
+</html>
