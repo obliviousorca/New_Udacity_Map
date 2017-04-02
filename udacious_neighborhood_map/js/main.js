@@ -61,21 +61,20 @@
     var markers = [];
     var info_windows = [];
     var latlon;
+    var location_marker;
+    var map;
 
-
-        
-
-var vm = function() {
+    var ViewModel = function() {
 
     
-      this.categoryList = [];
+      this.categoryList = [],
 
       // dynamically retrieve categories to
       // create drop down list later
       locations.map(food => {
         if (!this.categoryList.includes(food.type))
           this.categoryList.push(food.type);
-      });
+      }),
 
       this.foodArray = ko.observableArray(locations);
       // Observable Array for drop down list
@@ -97,7 +96,7 @@ var vm = function() {
             return ( food.type === this.selectedCategory() );
           });
         } //.conditional
-      }); //.filterFood 
+      }), //.filterFood 
      //.constructor
 
     
@@ -124,10 +123,11 @@ var vm = function() {
             }
         }
     },
+
             this.focusMarker = function(place) {
 
-            markers[i].infowindow.open(map, markers[i]);
-            
+            // markers[i].infowindow.open(map, markers[i]);
+            console.log(this.location)
             map.setCenter(this.location);
 
             map.setZoom(4);
@@ -136,25 +136,11 @@ var vm = function() {
 
     };
 
-     ko.applyBindings(vm);
 
+var vm = new ViewModel()
 
-
-
-
-
-
-
-
-    
-
-
-
-
-    var location_marker;
-
-    var map;
-
+ko.applyBindings(vm);
+// alert(vm.selectedCategory);
     function createMarker(lat, lon, infoText, imgData) {
 
         var newmarker = new google.maps.Marker({
@@ -169,20 +155,21 @@ var vm = function() {
 
     function toggleBounce() {
         if (newmarker.getAnimation() === null) {
-            newmarker.setAnimation(google.maps.Animation.BOUNCE);
+            newmarker.setAnimation(google.maps.Animation.BOUNCE); 
+            setTimeout(function(){newmarker.setAnimation(null);}, 700);
           
         } else {
-          newmarker.setAnimation(null);
+           newmarker.setAnimation(null);
         }
       }
-
+      newmarker.addListener('click', toggleBounce);
         newmarker.infowindow = new google.maps.InfoWindow({
 
             content: imgData
 
         });
 
-        newmarker.addListener('click', toggleBounce);
+        
 
         google.maps.event.addListener(newmarker, 'click', function() {
 
@@ -290,6 +277,10 @@ var vm = function() {
     //     map.setZoom(4);
 
     // };
+
+
+
+
 
     function gmapsError() {
     alert("Google Maps has failed to load. Please check your internet connection and try again.");

@@ -29,8 +29,10 @@
                          optionsCaption: 'Choose category to filter',
                          value: selectedCategory"></select>
 
-            <ul class="clearfix menu" data-bind="foreach: filterFood">
-                <li data-bind="click: $root.focusMarker">
+
+
+            <ul class="clearfix menu" data-bind="foreach: filterFood , ">
+                <li>
                     <a data-bind="text:title, attr: {id: title}"  href=#></a>
                 </li>
 
