@@ -1,19 +1,3 @@
-
-    $(document).ready(function() {
-        $("#MeAAAnu").click(function() {
-            $("#map").css("height", "67%");
-            z = 2;
-            $("#MeAAAnu").click(function() {
-                $("#map").css("height", "85%");
-                z = 2;
-            });
-
-        });
-
-
-
-    });
-
     var locations =  [
    {
             title: 'New York , USA',
@@ -78,12 +62,12 @@
     var info_windows = [];
     var latlon;
 
-    class ViewModel {
 
         
 
-   
-    constructor() {
+var vm = function() {
+
+    
       this.categoryList = [];
 
       // dynamically retrieve categories to
@@ -114,8 +98,45 @@
           });
         } //.conditional
       }); //.filterFood 
-    } //.constructor
-   //.class
+     //.constructor
+
+    
+        this.focusLocation = function (clicked_id) {
+        
+        i = 0;
+
+        while (i < 6) {
+
+            if (clicked_id == locations[i].title) {
+
+                this.setVisible(true);
+
+                focusMarker(i);
+
+                return;
+
+            } else {
+
+                this.setVisible(false);
+
+                i++;
+
+            }
+        }
+    },
+            this.focusMarker = function(place) {
+
+            markers[i].infowindow.open(map, markers[i]);
+            
+            map.setCenter(this.location);
+
+            map.setZoom(4);
+
+        }
+
+    };
+
+     ko.applyBindings(vm);
 
 
 
@@ -123,9 +144,9 @@
 
 
 
-};
 
-     ko.applyBindings(new ViewModel());
+
+    
 
 
 
@@ -147,7 +168,7 @@
         });
 
     function toggleBounce() {
-        if (newmarker.getAnimation() == null) {
+        if (newmarker.getAnimation() === null) {
             newmarker.setAnimation(google.maps.Animation.BOUNCE);
           
         } else {
@@ -173,8 +194,8 @@
         });
 
     }
-
     function processMarker(_marker) {
+
 
         var _venueId;
 
@@ -206,9 +227,9 @@
 
                                     var lName = tips.user.lastName;
 
-                                    if (fName == null) fName = "";
+                                    if (fName === null) fName = "";
 
-                                    if (lName == null) lName = "";
+                                    if (lName === null) lName = "";
 
                                     var userDetails = fName + " " + lName;
 
@@ -259,8 +280,8 @@
             markers.push(location_marker);
 
             processMarker(location_marker);
-        };
-    };
+        }
+    }
 
     // function focusMarker(place) {
 
@@ -269,41 +290,7 @@
     //     map.setZoom(4);
 
     // };
-var vm = {
-    locations: ko.observableArray(locations),
-        focusLocation: function (clicked_id) {
-        
 
-        i = 0;
-
-        while (i < 6) {
-
-            if (clicked_id == locations[i].title) {
-
-
-
-                focusMarker(i);
-
-                return;
-
-            } else {
-
-                i++;
-
-            }
-        };
-    },
-            focusMarker: function(place) {
-
-            markers[i].infowindow.open(map, markers[i]);
-            
-            map.setCenter(this.location);
-
-            map.setZoom(4);
-
-        }
-
-    };
     function gmapsError() {
     alert("Google Maps has failed to load. Please check your internet connection and try again.");
 }
