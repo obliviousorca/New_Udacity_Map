@@ -55,6 +55,7 @@
         }
 
   ];
+
     var markers_visibility = [];
     var fourSqrsVenues = [];
     var fourSqrsData = [];
@@ -63,9 +64,6 @@
     var latlon;
     var location_marker;
     var map;
-
-
-
 
     function createMarker(lat, lon, infoText, imgData) {
 
@@ -78,9 +76,8 @@
             title: infoText
 
         });
+
         markers_visibility.push(newmarker);
-
-
 
     function toggleBounce() {
         if (newmarker.getAnimation() === null) {
@@ -91,14 +88,14 @@
            newmarker.setAnimation(null);
         }
       }
+
         newmarker.addListener('click', toggleBounce);
 
-        newmarker.infowindow = new google.maps.InfoWindow({
+        var a = newmarker.infowindow = new google.maps.InfoWindow({
 
             content: imgData
 
         });
-
 
         google.maps.event.addListener(newmarker, 'click', function() {
 
@@ -108,11 +105,9 @@
             this.infowindow.open(map, this);
 
         });
-
     }
+
     function processMarker(_marker) {
-
-
         var _venueId;
 
         var _venueData;
@@ -120,6 +115,7 @@
         var fourSqrAPI = "https://api.foursquare.com/v2/venues/explore?ll=" + _marker.position.lat() + "," + _marker.position.lng() + "&client_id=RMUX5HBSR5HMDKG3RCXK3O2VIY0BCRNMSD14V2DGQV0PK02U&client_secret=I3TIMAEYGCPDPB1T0332OOF3O2JP454OZ0PVCGWOXB1UIR4Y&v=20170323";
 
         $.getJSON(fourSqrAPI).done(function(data) {
+
 
             var testData = data;
 
@@ -158,7 +154,9 @@
                     });
                 }
             });
-        });
+        }).fail(function() {
+                console.log( "error" );
+              })
     }
 
     function randomIntFromInterval(min, max) {
@@ -193,6 +191,8 @@
                 position: locations[i].location,
             });
             location_marker.setVisible(false);
+            vm.foodArray()[i].marker = location_marker;
+            
 
             markers.push(location_marker);
 
@@ -202,7 +202,6 @@
 
     var ViewModel = function() {
 
-    
       this.categoryList = [],
 
       // dynamically retrieve categories to
@@ -217,7 +216,6 @@
       this.categories = ko.observableArray(this.categoryList); 
       // This will hold the selected value from drop down menu
       this.selectedCategory = ko.observable(); 
-
       /**
        * Filter function, return filtered food by
        * selected category from <select>
@@ -258,38 +256,27 @@
 
 //      }
 // },
-
-
-    
-    
+     
         
-        i = 0;
-
-
-   
-
             this.focusMarker = function(place) {
+                i = 0;
+                console.log(this.location);
                 for(var i = 0; i < locations.length; i++) {
-
-                    if (this.location == markers_visibility[2].location) {
-
-                        // markers_visibility[i].setVisible(true);
-                        console.log('aaa');
-                        // focusMarker(i);
-
-                        return;
-
-                    } else {
+                    
+                    
+                    i++;
+                    if (this.location != location_marker.location ) {
 
                         // markers_visibility[i].setVisible(false);
+                        console.log('A');
+                        location_marker[i].setVisible(false);
+                    
 
-                        i++;
-
-                    }
+                    } 
                 }
+                markers_visibility[1].setVisible(true);
+            // markers_visibility[0].createMarker.a.open(map, markers_visibility[0]);
 
-            // markers[i].infowindow.open(map, markers[i]);
-            
             map.setCenter(this.location);
 
             map.setZoom(4);
@@ -297,7 +284,6 @@
         }
 
     };
-
 
 var vm = new ViewModel();
 ko.applyBindings(vm);
@@ -316,7 +302,7 @@ ko.applyBindings(vm);
 
 // vm.filterMarkers();
     function gmapsError() {
-    alert("Google Maps has failed to load. Please check your internet connection and try again.");
+    console.log("Google Maps has failed to load. Please check your internet connection and try again.");
 }
 
 $('.hamburger').on('click', function(e) {
