@@ -55,8 +55,12 @@
         }
 
   ];
-
+    var windows = [];
+    var b;
+    var details;
+    var a;
     var markers_visibility = [];
+    var markers_types = [];
     var fourSqrsVenues = [];
     var fourSqrsData = [];
     var markers = [];
@@ -65,7 +69,8 @@
     var location_marker;
     var map;
 
-    function createMarker(lat, lon, infoText, imgData) {
+
+    function createMarker(lat, lon, infoText, imgData , type) {
 
         var newmarker = new google.maps.Marker({
 
@@ -73,38 +78,62 @@
 
             map: map,
 
-            title: infoText
+            title: infoText,
+
 
         });
+        newmarker.setVisible(false);
 
         markers_visibility.push(newmarker);
 
     function toggleBounce() {
-        if (newmarker.getAnimation() === null) {
-            newmarker.setAnimation(google.maps.Animation.BOUNCE); 
-            setTimeout(function(){newmarker.setAnimation(null);}, 700);
+        if (location_marker.getAnimation() === null) {
+            location_marker.setAnimation(google.maps.Animation.BOUNCE); 
+            setTimeout(function(){location_marker.setAnimation(null);}, 700);
           
         } else {
-           newmarker.setAnimation(null);
+           location_marker.setAnimation(null);
         }
       }
+            for (var i = 0; i < locations.length; i++) {
 
-        newmarker.addListener('click', toggleBounce);
+            location_marker = new google.maps.Marker({
 
-        var a = newmarker.infowindow = new google.maps.InfoWindow({
+                map: map,
+
+                title: locations[i].title,
+
+                position: locations[i].location,
+
+                type: locations[i].type
+            });
+            
+            
+            // location_marker.setVisible(false);
+          
+        }
+
+        location_marker.addListener('click', toggleBounce);
+
+         a = location_marker.infowindow = new google.maps.InfoWindow({
 
             content: imgData
 
         });
 
-        google.maps.event.addListener(newmarker, 'click', function() {
-
-
+         google.maps.event.addListener(location_marker, 'click', function() {
+            
+            var markerInfowindow =  this.infowindow
+            var xx = createMarker.infowindow;
             var test = fourSqrsVenues;
-
-            this.infowindow.open(map, this);
+            
+            markerInfowindow.open(map, this);
+            setTimeout(function(){
+                markerInfowindow.close();
+            }, 1400); 
 
         });
+      
     }
 
     function processMarker(_marker) {
@@ -145,9 +174,9 @@
 
                                     var userDetails = fName + " " + lName;
 
-                                    var details = "<div style='font-size:17px;text-decoration:underline;font-weight:bold; margin-bottom:7px;'>" + _marker.title + "</div> <div style='margin-bottom:3px;'><span style='font-size:13px;font-weight:bold;'>Name:</span> " + venueName + "</br></div>  <div style='margin-bottom:3px;'> <span style='font-size:13px;font-weight:bold;'>Category:</span> " + venueCat + "</br></div>  <span style='font-size:13px;font-weight:bold;'>Tip:</span> " + tips.text + " (<i>submitted by: " + userDetails + "</i>)";
+                                    details = "<div style='font-size:17px;text-decoration:underline;font-weight:bold; margin-bottom:7px;'>" + _marker.title + "</div> <div style='margin-bottom:3px;'><span style='font-size:13px;font-weight:bold;'>Name:</span> " + venueName + "</br></div>  <div style='margin-bottom:3px;'> <span style='font-size:13px;font-weight:bold;'>Category:</span> " + venueCat + "</br></div>  <span style='font-size:13px;font-weight:bold;'>Tip:</span> " + tips.text + " (<i>submitted by: " + userDetails + "</i>)";
 
-                                    createMarker(_marker.position.lat(), _marker.position.lng(), _marker.title, details);
+                                    createMarker(_marker.position.lat(), _marker.position.lng(), _marker.title, details , _marker.type);
                                 }
                             });
                         }
@@ -179,25 +208,10 @@
             mapTypeId: 'roadmap'
 
         });
+        processMarker(createMarker.location_marker);
+        vm.foodArray()[i].marker = location_marker;
+        markers.push(location_marker);
 
-        for (var i = 0; i < locations.length; i++) {
-
-            location_marker = new google.maps.Marker({
-
-                map: map,
-
-                title: locations[i].title,
-
-                position: locations[i].location,
-            });
-            location_marker.setVisible(false);
-            vm.foodArray()[i].marker = location_marker;
-            
-
-            markers.push(location_marker);
-
-            processMarker(location_marker);
-        }
     };
 
     var ViewModel = function() {
@@ -227,6 +241,18 @@
         } else {
           // input found, match food type to filter
           return ko.utils.arrayFilter(this.foodArray(), (food) => {
+            if(food.type === this.selectedCategory()){
+
+                for(var i = 0; i < locations.length; i++) {
+                        if(markers[i].type == this.selectedCategory()){
+                            markers[i].setVisible(false);
+                        }
+                        // var selectedMarker = this.marker;
+                        // console.log(this.marker);
+                }
+                        // selectedMarker.setVisible(false);
+            }
+            
             return ( food.type === this.selectedCategory() );
           });
         } //.conditional
@@ -260,21 +286,67 @@
         
             this.focusMarker = function(place) {
                 i = 0;
-                console.log(this.location);
-                for(var i = 0; i < locations.length; i++) {
-                    
-                    
-                    i++;
-                    if (this.location != location_marker.location ) {
+                console.log(this.title);
+                
+                for(var i = 0; i < locations.length; i++) {               
+                            
+                            markers[i].setVisible(false);//put this above  :)
+                            // console.log(markers_visibility[i].infowindow);
+                          }
+                        if(this.marker === place.marker) {
+                            var selectedMarker = this.marker;//put this in the filter area above :)
+                            selectedMarker.setVisible(true);
 
-                        // markers_visibility[i].setVisible(false);
-                        console.log('A');
-                        location_marker[i].setVisible(false);
+                            selectedMarker.setAnimation(google.maps.Animation.BOUNCE); 
+                            setTimeout(function(){
+                                selectedMarker.setAnimation(null);
+                            }, 700);
+
+
+                            // a.setContent(details);
+                            // a.open(map , this.marker);
+
+                            // console.log(selectedMarker.infowindow);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //THIS IS THE WHERE TO PUT THE LAST THING (INFOWINDOW STUFF)
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                            // if (markers_visibility[i].infowindow == place.marker.infowindow){
+                            //     console.log('e');
+                            // }
+                            // selectedMarker.a.open(map, selectedMarker);
+
+                            // selectedMarker.infowindow.open(map, selectedMarker);
+
+
+                            // createMarker.infowindow.open(this.marker);
+
+                        }
+                        // console.log()
+                        // console.log(place.marker);
+                        // while(x<5) {
+                        
+                        // if (markers_visibility[x]==location_marker.title){
+                        //     // setVisible(true)
+                        //     console.log('A')
+                        // }
+                        // x++;
+                        // }
+                        // location_marker[i].setVisible(false);
                     
 
-                    } 
-                }
-                markers_visibility[1].setVisible(true);
+                    
+              
+                // markers[1].setVisible(false);
             // markers_visibility[0].createMarker.a.open(map, markers_visibility[0]);
 
             map.setCenter(this.location);
