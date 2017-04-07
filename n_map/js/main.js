@@ -119,10 +119,7 @@
      var fourSqrAPI = "https://api.foursquare.com/v2/venues/explore?ll=" + _marker.position.lat() + "," + _marker.position.lng() + "&client_id=RMUX5HBSR5HMDKG3RCXK3O2VIY0BCRNMSD14V2DGQV0PK02U&client_secret=I3TIMAEYGCPDPB1T0332OOF3O2JP454OZ0PVCGWOXB1UIR4Y&v=20170323";
 
      $.getJSON(fourSqrAPI).done(function(data) {
-
-
-         var testData = data;
-
+          
          $.each(data.response.groups, function(i, groups) {
 
              if (i === 0) {
@@ -164,13 +161,10 @@
  }
 
  function randomIntFromInterval(min, max) {
-
      return Math.floor(Math.random() * (max - min + 1) + min);
-
  }
 
  function initAutocomplete() {
-
      map = new google.maps.Map(document.getElementById('map'), {
 
          center: {
@@ -181,7 +175,6 @@
          zoom: 3,
 
          mapTypeId: 'roadmap'
-
      });
 
      for (var i = 0; i < locations.length; i++) {
@@ -197,7 +190,7 @@
              type: locations[i].type
          });
          location_marker.setVisible(false);
-         vm.foodArray()[i].marker = location_marker;
+         vm.locArray()[i].marker = location_marker;
 
 
          markers.push(location_marker);
@@ -212,12 +205,12 @@
 
          // dynamically retrieve categories to
          // create drop down list later
-         locations.map(food => {
-             if (!this.categoryList.includes(food.type))
-                 this.categoryList.push(food.type);
+         locations.map(locat => {
+             if (!this.categoryList.includes(locat.type))
+                 this.categoryList.push(locat.type);
          }),
 
-         this.foodArray = ko.observableArray(locations);
+         this.locArray = ko.observableArray(locations);
      // Observable Array for drop down list
      this.categories = ko.observableArray(this.categoryList);
      // This will hold the selected value from drop down menu
@@ -227,106 +220,49 @@
              * selected category from
       <select>
           */
-     this.filterFood = ko.computed(() => {
+     this.filterLoc = ko.computed(() => {
              if (!this.selectedCategory()) {
                  // No input found, return all food
-                 return this.foodArray();
+                 return this.locArray();
              } else {
                  // input found, match food type to filter
-                 return ko.utils.arrayFilter(this.foodArray(), (food) => {
-                     var teasfkj = this.selectedCategory().type;
-                     var teasfkjzsd = this.selectedCategory();
+                 return ko.utils.arrayFilter(this.locArray(), (locat) => {
 
 
                      for (var i = 0; i < markers_visibility.length; i++) {
 
-                         var teasfsda = this.selectedCategory();
-
-                         var teasfdsg = markers_visibility[i].type;
-
-                         var ewsdzlkjv = markers_visibility[i];
-
                          markers_visibility[i].infowindow.close(map, markers_visibility[i]);
 
                          markers_visibility[i].setVisible(false);
-                         // locations[i].marker.setAnimation(google.maps.Animation.BOUNCE);
+                        
                          if (this.selectedCategory() === markers_visibility[i].type) {
                              var test = "";
                              markers_visibility[i].setVisible(true);
-
-                             //markers_visibility[i].infowindow.open(map, markers_visibility[i]);
-                             //markers_visibility[i].setAnimation(google.maps.Animation.BOUNCE);
-                             //setTimeout(function () {
-                             //    markers_visibility[i].setAnimation(null);
-                             //     }, 700);
-
-                             //var bn = markers_visibility[i].setAnimation(null);
-                             ///////////////////Find a way to check the selected category's titles and display in list
-                             //locations[i].marker.setVisible(true);
                          }
                      }
-                     return (food.type === this.selectedCategory());
+                     return (locat.type === this.selectedCategory());
                  });
              } //.conditional
          }), //.filterFood
          //.constructor
 
-         // this.filterMarkers = function() {
-         //      for(var i = 0; i < locations.length; i++) {
-         //         this.marker = new google.maps.Marker({
-         //             position: new google.maps.LatLng(locations[i].lat, locations[i].long),
-         //             map: map,
-         //             title: locations[i].title
-         //         });
-         //         if(selectedCategory() != locations[i].type){
-         //             this.marker.setVisible(false);
-         //         }
-         //         else {
-         //             this.marker.setVisible(true);
-         //         }
-         //      }
-         // },
+  
          this.focusMarker = function(place) {
-             //i = 0;
+             
              console.log(this.title);
-             //for (var i = 0; i < locations.length; i++) {
-
-             // console.log()
-             // console.log(place.marker);
-             // while(x
-             //<5) {
-
-             // if (markers_visibility[x]==location_marker.title){
-             //     // setVisible(true)
-             //     console.log('A')
-             // }
-             // x++;
-             // }
-             // location_marker[i].setVisible(false);
-             //markers_visibility[1].setVisible(false);
+            
 
              for (var i = 0; i < markers_visibility.length; i++) {
-
-                 //var teasfsda = this.selectedCategory();
-
-                 //var teasfdsg = markers_visibility[i].type;
-
-                 var ewsdzlkjv = markers_visibility[i].title;
-
-                 //markers_visibility[i].setVisible(false);
-
+                  
                  markers_visibility[i].infowindow.close(map, markers_visibility[i]);
 
                  if (this.title === markers_visibility[i].title) {
-                     var teasfa = markers_visibility[i];
-                     var test = "";
+    
                      markers_visibility[i].infowindow.open(map, markers_visibility[i]);
                  }
 
              }
-
-             // markers_visibility[0].createMarker.a.open(map, markers_visibility[0]);
-
+          
              map.setCenter(this.location);
 
              map.setZoom(4);
@@ -337,15 +273,6 @@
  var vm = new ViewModel();
  ko.applyBindings(vm);
 
- // function focusMarker(place) {
-
- //     map.setCenter(locations[place].location);
-
- //     map.setZoom(4);
-
- // };
-
- // vm.filterMarkers();
  function gmapsError() {
      console.log("Google Maps has failed to load. Please check your internet connection and try again.");
  }
